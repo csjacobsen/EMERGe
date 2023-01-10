@@ -1,0 +1,13 @@
+library(ShortRead)
+template <- DNAString("GGGAATGGCGCTTTGGAGAACAACTCTAGGCAGAGGTCTCAAATTTCTTTCTTTCTTTGAGACCTNNNNNNNNNNTTGTTCTCCATTGTACCCTC")
+cjr <- readFastq("CJR_preprocesed_SE.fastq")
+cjr <- cjr[width(cjr) %in% c(93:96)]
+perfect <- xscat(subseq(sread(cjr),21,26), subseq(sread(cjr),30,35), subseq(sread(cjr),60,65), subseq(sread(cjr),76,81)) == DNAString("CAACTCGCAGAGAGACCTTTGTTC")
+key_seq1 <- subseq(sread(cjr)[perfect],27,29)
+table(key_seq1)
+ks1 <- as.data.frame(table(key_seq1))
+ks1$sample="cjr"
+colnames(ks1) <- c("codon", "count", "sample")
+mer_seq1 <- subseq(sread(cjr)[perfect],66,75)
+mk_table <- table((as.character(mer_seq1)),(as.character(key_seq1)))
+write.csv(mk_table,"CJR_codon_10mer.csv")
